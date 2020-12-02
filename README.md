@@ -5,6 +5,9 @@ This repo is a result of my 6th weekly project at SPICED Academy Berlin.
 
 The Goal of the Project:
 Build a Dockerized Data Pipeline that analyzes the sentiment of tweets.
+
+![Pipeline schema (c) SPICED Academy](https://github.com/asyaparfenova/data_pipeline/blob/main/images/pipeline.png?raw=true)
+
 The pipeline should collect tweets and store them in a database. Next, the sentiment of tweets is analyzed and the result stored in a second database. Finally, the best or worst sentiment for a given time interval is put on Slack automatically.
 
 Challenges of the project:
