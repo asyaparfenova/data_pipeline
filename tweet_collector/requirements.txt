@@ -1,0 +1,4 @@
+tweepy
+psycopg2-binary
+pymongo
+python-decouple

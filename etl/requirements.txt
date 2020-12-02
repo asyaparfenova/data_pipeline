@@ -1,0 +1,5 @@
+SQLAlchemy
+pymongo
+psycopg2-binary
+vaderSentiment
+python-decouple

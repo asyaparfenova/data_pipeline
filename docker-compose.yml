@@ -1,0 +1,55 @@
+version: '3'
+services: #or containers
+
+  tweepy:
+    build: tweet_collector/
+    container_name: 'tweet_collector'
+    volumes:
+      - c:/users/asyap/SPICED/spiced_exercises_and_challenges/week_07/docker_compose_example/tweet_collector/:/app
+    depends_on:
+      - pg_db
+      - mongo_db
+
+  pg_db:
+    image: postgres:13.0 #<-refers to an image on docker-hub directly
+    container_name: 'postgres'
+    ports:
+      - 5555:5432
+      # Port OUTSIDE Container:Port INSIDE Container
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+
+  mongo_db:
+    image: mongo:3.6
+    container_name: 'mongodb'
+    volumes:
+      - c:/users/asyap/SPICED/spiced_exercises_and_challenges/week_07/docker_compose_example/mongo_db/:/data/db
+    ports:
+      - 27017:27017
+   
+  etl:
+    build: etl/
+    container_name: 'etl'
+    volumes:
+      - c:/users/asyap/SPICED/spiced_exercises_and_challenges/week_07/docker_compose_example/etl/:/app
+    depends_on:
+      - pg_db
+      - mongo_db
+      - tweepy
+
+  slackbot:
+    build: slackbot/
+    container_name: 'slackbot'
+    volumes:
+      - c:/users/asyap/SPICED/spiced_exercises_and_challenges/week_07/docker_compose_example/slackbot/:/app
+    depends_on:
+      - pg_db
+      - mongo_db
+      - tweepy
+      - etl
+
+  
+  
+  
+  # slackbot:
