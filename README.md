@@ -26,3 +26,10 @@ The pipeline should collect tweets and store them in a database. Next, the senti
 - docker containers for tweepy, etl and slackbot were built from custom made docker-files (placed on folders accordingly)
 - the tweeter API, etl and Slackbot programs are written in python (placed on folders accordingly)
 
+## passwrods and credential
+- to run this programm you would need .env files with:
+  - postgres password
+  - twitter developer api credentials
+  - slackbot url
+(not copied to this repo)
+  
