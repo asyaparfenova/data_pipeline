@@ -17,15 +17,15 @@ def authenticate():
     """Function for handling Twitter Authentication."""
     auth = OAuthHandler(CONSUMER_API_KEY, CONSUMER_API_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-
     return auth
 
-#connect to mongoDB
+# connect to mongoDB
 client = pymongo.MongoClient(host='mongodb', port=27017)
 db = client.my_tweets
 collection = db.new_berlin_tweets
 
 
+# this class was copied from SPICED lesson with just a few modification from my side
 class TwitterListener(StreamListener):
 
     def on_data(self, data):
@@ -33,15 +33,14 @@ class TwitterListener(StreamListener):
         """Whatever we put in this method defines what is done with
         every single tweet as it is intercepted in real-time"""
 
-        t = json.loads(data) #t is just a regular python dictionary.
+        t = json.loads(data)
 
         tweet = {
         'text': t['text'],
         'username': t['user']['screen_name'],
         'followers_count': t['user']['followers_count']
         }
-
-        logging.critical(f'\n\n\nTWEET INCOMING: {tweet["text"]}\n\n\n')
+        
         collection.insert_one(tweet)
         
 
@@ -57,4 +56,4 @@ if __name__ == '__main__':
     auth = authenticate()
     listener = TwitterListener()
     stream = Stream(auth, listener)
-    stream.filter(track=['berlin'], languages=['en'])
+    stream.filter(track=['berlin'], languages=['en']) # we collecting tweets in English with mentioning of Berlin

@@ -1,8 +1,0 @@
-'''
-Stores the keys and tokes to access the twitter API
-'''
-
-CUSTOMER_API_KEY = "QAHXLz9c79b4cZuOOqLFE3GMa"
-CONSUMER_API_SECRET = 'RYdCtP4OzOHe5AJfjzkTTpxUW89OQVbFqjwXfoPkTa0qWhNkR0'
-ACCESS_TOKEN = '456932297-oaQD1Vg0ZsdOaJYVBnXY661dI92eljdFhINGe1FT'
-ACCESS_TOKEN_SECRET = '85GGqr3XYDwwgrfr9rXvzK0fzLWKTu56KhyhqF0oyyzPE'

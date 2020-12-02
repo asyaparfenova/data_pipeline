@@ -7,7 +7,6 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from decouple import config
 
 time.sleep(10)
-logging.critical('ETL is running!')
 
 
 def clean_tweet(tweet):
@@ -25,16 +24,14 @@ def clean_tweet(tweet):
 client = pymongo.MongoClient(host='mongodb', port=27017)
 db = client.my_tweets
 collection = db.new_berlin_tweets
-logging.critical('\nConnected to MongoDB\n')
 
 
 # connecting to postgres
 password = config('POSTGRES_PASSWORD', cast=int)
 engine = create_engine(f'postgres://postgres:{password}@postgres:5432/postgres')
-logging.critical('\nConnected to Postgres')
 
 
-#creating psql-table if necessary
+# creating psql-table if necessary
 create_query = """
 CREATE TABLE IF NOT EXISTS berlin_tweets(
     id VARCHAR(50) PRIMARY KEY,
@@ -47,25 +44,35 @@ CREATE TABLE IF NOT EXISTS berlin_tweets(
 );
 """
 engine.execute(create_query)
-logging.critical('\nPostgres table is created!\n')
 
 
-#creating a Sentiment Intensity Analyzer
+# creating a vader sentiment analyzer
 s = SentimentIntensityAnalyzer()
 
-while True:
-    #reading tweets from mongodb, doing sentiment analysis and inserting tweets to PostgreSQL
-    tweets = collection.find({})
-    time.sleep(10)
-    for tweet in tweets:
-        if ('status' in tweet) == False or tweet['status'] == 0:
-            logging.critical('Got an unread tweet!')
-            tweet_text = tweet['text']
-            tweet_text = clean_tweet(tweet_text)
-            ps = s.polarity_scores(tweet_text)['compound']
-            engine.execute("INSERT INTO berlin_tweets(id, text, clean_text, username, followers_count, polarity_score, status) VALUES(%s, %s, %s, %s, %s, %s, %s)", (f'''{tweet['_id']}''', f'''{tweet['text']}''', f'''{tweet_text}''',  f"{tweet['username']}", tweet['followers_count'], ps, 1))
-            collection.update_one({'_id': tweet['_id']}, {"$set": {"status":1}})
-            logging.critical('\nNew row inserted in postgres DB\n')
-        else:
-            #logging.critical('\nSomething went wrong\n')
-            None
+
+if __name__ == '__main__':
+    while True:
+        #reading tweets from mongodb, doing sentiment analysis and inserting tweets to PostgreSQL
+        tweets = collection.find({})
+        time.sleep(10)
+        for tweet in tweets:
+            if ('status' in tweet) == False or tweet['status'] == 0:
+                tweet_text = tweet['text']
+                tweet_text = clean_tweet(tweet_text)
+                ps = s.polarity_scores(tweet_text)['compound']
+                engine.execute('''INSERT INTO berlin_tweets(id,
+                                                            text,
+                                                            clean_text,
+                                                            username,
+                                                            followers_count,
+                                                            polarity_score,
+                                                            status)
+                                  VALUES(%s, %s, %s, %s, %s, %s, %s)''',
+                                  (f'''{tweet['_id']}''',
+                                   f'''{tweet['text']}''',
+                                   f'''{tweet_text}''',
+                                   f"{tweet['username']}",
+                                   tweet['followers_count'], ps, 1))
+                collection.update_one({'_id': tweet['_id']}, {"$set": {"status":1}})
+            else:
+                None
