@@ -109,6 +109,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+tweet_collector/.env
+Slackbot/.env
+etl/.env
 
 # Spyder project settings
 .spyderproject
